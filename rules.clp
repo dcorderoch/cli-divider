@@ -20,13 +20,14 @@
 )
 
 (defrule divisible20
-  ?check <- (checkdiv ?x)
+  (checkdiv ?x)
+  ;?check <- (checkdiv ?x)
   (test (<> ?x 0))
   (test (= (mod ?x 10) 0))
   =>
-  (
-    retract ?check
-  )
+  ;(
+  ;  retract ?check
+  ;)
   (
     assert (divisible 2 ?x)
   )
@@ -36,82 +37,91 @@
 )
 
 (defrule divisible22
-  ?check <- (checkdiv ?x)
+  (checkdiv ?x)
+  ;?check <- (checkdiv ?x)
   (test (<> ?x 0))
   (test (= (mod ?x 10) 2))
   =>
-  (
-    retract ?check
-  )
+  ;(
+  ;  retract ?check
+  ;)
   (
     assert (divisible 2 ?x)
   )
 )
 
 (defrule divisible24
-  ?check <- (checkdiv ?x)
+  (checkdiv ?x)
+  ;?check <- (checkdiv ?x)
   (test (<> ?x 0))
   (test (= (mod ?x 10) 4))
   =>
   (
     retract ?check
   )
-  (
-    assert (divisible 2 ?x)
-  )
+  ;(
+  ;  assert (divisible 2 ?x)
+  ;)
 )
 
 (defrule divisible26
-  ?check <- (checkdiv ?x)
+  (checkdiv ?x)
+  ;?check <- (checkdiv ?x)
   (test (<> ?x 0))
   (test (= (mod ?x 10) 6))
   =>
-  (
-    retract ?check
-  )
+  ;(
+  ;  retract ?check
+  ;)
   (
     assert (divisible 2 ?x)
   )
 )
 
 (defrule divisible28
-  ?check <- (checkdiv ?x)
+  (checkdiv ?x)
+  ;?check <- (checkdiv ?x)
   (test (<> ?x 0))
   (test (= (mod ?x 10) 8))
   =>
-  (
-    retract ?check
-  )
+  ;(
+  ;  retract ?check
+  ;)
   (
     assert (divisible 2 ?x)
   )
 )
 
 (defrule reducer
-  ?rednum <- (fact_red ?x)
+  (fact_red ?x)
+  ;?rednum <- (fact_red ?x)
   =>
-  (
-    retract ?rednum
-  )
+  ;(
+  ;  retract ?rednum
+  ;)
   (
     assert (fact_red_sum ?x ?x 0)
   )
 )
 
 (defrule red_helper
-  ?rednum <- (fact_red_sum ?x ?x ?s)
-  (test (> ?x 0))
+  (fact_red_sum ?x ?y ?s)
+  ;?rednum <- (fact_red_sum ?x ?x ?s)
+  (test (<> ?y 0))
   =>
+  ;(
+  ;  retract ?rednum
+  ;)
+  ;(
+  ;  printout t "red_helper with: " ?x ", " ?y ", and " ?s crlf
+  ;)
   (
-    retract ?rednum
-  )
-  (
-    assert (fact_red_sum ?x (div ?x 10) (+ ?s (mod ?x 10)))
+    assert (fact_red_sum ?x (div ?y 10) (+ ?s (mod ?y 10)))
   )
 )
 
 (defrule red_end
-  ?rednum <- (fact_red_sum ?x 0 ?s)
+  (fact_red_sum ?x 0 ?s)
   =>
   (if (> ?s 10) then
     (assert (fact_red_rec ?x ?s))
@@ -121,8 +131,27 @@
   )
 )
 
+(defrule last_check_rule
+  (fact_last_check_3 ?x ?s)
+  (divisible ?s)
+  =>
+  (
+    assert (divisible ?x)
+  )
+)
+
+(defrule red_end_prune
+  ?rednum <- (fact_red_sum ?x ?o ?s)
+  (test (<> ?o 0))
+  =>
+  (
+    retract ?rednum
+  )
+)
+
 (defrule fact_red_recursive
-  ?check <- (fact_red_rec ?x ?s)
+  (fact_red_rec ?x ?s)
+  ;?check <- (fact_red_rec ?x ?s)
   (fact_red_sum ?x 0 ?s)
   =>
   (
@@ -131,36 +160,39 @@
 )
 
 (defrule fact_last_check_3_rule3
-  ?check <- (fact_last_check_3 ?x ?s)
+  (fact_last_check_3 ?x ?s)
+  ;?check <- (fact_last_check_3 ?x ?s)
   (test (= 3 ?s))
   =>
-  (
-    retract ?check
-  )
+  ;(
+  ;  retract ?check
+  ;)
   (
     assert (divisible 3 ?x)
   )
 )
 
 (defrule fact_last_check_3_rule6
-  ?check <- (fact_last_check_3 ?x ?s)
+  (fact_last_check_3 ?x ?s)
+  ;?check <- (fact_last_check_3 ?x ?s)
   (test (= 6 ?s))
   =>
-  (
-    retract ?check
-  )
+  ;(
+  ;  retract ?check
+  ;)
   (
     assert (divisible 3 ?x)
   )
 )
 
 (defrule fact_last_check_3_rule9
-  ?check <- (fact_last_check_3 ?x ?s)
+  (fact_last_check_3 ?x ?s)
+  ;?check <- (fact_last_check_3 ?x ?s)
   (test (= 9 ?s))
   =>
-  (
-    retract ?check
-  )
+  ;(
+  ;  retract ?check
+  ;)
   (
     assert (divisible 3 ?x)
   )
@@ -172,26 +204,6 @@
   =>
   (
     assert (fact_red ?x)
-  )
-)
-
-(defrule divisible3_not5
-  ?check <- (checkdiv ?x)
-  (test (> ?x 10))
-  (test (= (mod ?x 10) 5))
-  =>
-  (
-    retract ?check
-  )
-)
-
-(defrule divisible3_not10
-  ?check <- (checkdiv ?x)
-  (test (> ?x 10))
-  (test (= (mod ?x 10) 0))
-  =>
-  (
-    retract ?check
   )
 )
 
@@ -280,11 +292,12 @@
 ;)
 
 (defrule divisible
-  ?divisible <- (divisible ?c ?x)
+  (divisible ?c ?x)
+  ;?divisible <- (divisible ?c ?x)
   =>
-  (
-    retract ?divisible
-  )
+  ;(
+  ;  retract ?divisible
+  ;)
   (
     printout t ?x " is divisible by (constant) " ?c crlf
   )
@@ -368,6 +381,10 @@
 (assert (checkdiv 28))
 (assert (checkdiv 29))
 (assert (checkdiv 30))
+(assert (checkdiv 35))
+(assert (checkdiv 40))
+(assert (checkdiv 60))
+(assert (checkdiv 75))
 
 (facts)
 (run)
