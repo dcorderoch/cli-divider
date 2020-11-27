@@ -1,9 +1,9 @@
 (deffunction lastchar (?s)
   (
     return
-    (
-      sub-string (str-length ?s) (str-length ?s) ?s
-    )
+      (
+        sub-string (str-length ?s) (str-length ?s) ?s
+      )
   )
 )
 
@@ -80,6 +80,81 @@
   )
 )
 
+(defrule reducer
+  ?rednum <- (fact_red ?x)
+  =>
+  (retract ?rednum)
+  (assert (fact_red_sum ?x ?x 0))
+)
+
+(defrule red_helper
+  ?rednum <- (fact_red_sum ?x ?x ?s)
+  (test (> ?x 0))
+  =>
+  (retract ?rednum)
+  (assert (fact_red_sum ?x (div ?x 10) (+ ?s (mod ?x 10))))
+)
+
+(deffunction factorial (?a)
+  (if
+    (or
+      (not
+        (integerp ?a)
+      )
+      (< ?a 0)
+    ) then
+    (printout t "Factorial Error!" crlf)
+   else
+    (if (= ?a 0) then
+      1
+    else
+      (* ?a (factorial (- ?a 1)))
+    )
+  )
+)
+
+(defrule red_end
+  ?rednum <- (fact_red_sum ?x 0 ?s)
+  =>
+  (if (> ?s 10) then
+    (assert (fact_red_rec ?x ?s))
+    (assert (fact_red ?s))
+   else
+    (assert (fact_last_check_3 ?x ?s))
+  )
+)
+
+(defrule fact_red_recursive
+  ?check <- (fact_red_rec ?x ?s)
+  (fact_red_sum ?x 0 ?s)
+  =>
+  (assert (divisible "3" ?x))
+)
+
+(defrule fact_last_check_3_rule3
+  ?check <- (fact_last_check_3 ?x ?s)
+  (test (= 3 ?s))
+  =>
+  (retract ?check)
+  (assert (divisible "3" ?x))
+)
+
+(defrule fact_last_check_3_rule6
+  ?check <- (fact_last_check_3 ?x ?s)
+  (test (= 6 ?s))
+  =>
+  (retract ?check)
+  (assert (divisible "3" ?x))
+)
+
+(defrule fact_last_check_3_rule9
+  ?check <- (fact_last_check_3 ?x ?s)
+  (test (= 9 ?s))
+  =>
+  (retract ?check)
+  (assert (divisible "3" ?x))
+)
+
 (defrule divisible3
   ?check <- (checkdiv ?x)
   =>
@@ -87,7 +162,7 @@
     retract ?check
   )
   (
-    assert (checkdiv ?x "3")
+    assert (divisible "3" ?x)
   )
 )
 
@@ -263,5 +338,7 @@
 (assert (checkdiv "26"))
 
 (run)
+(facts)
 
-(exit)
+;(exit)
+
