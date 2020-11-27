@@ -7,109 +7,106 @@
   )
 )
 
-(defrule nocheck
-  ?check <- (checkdiv ?x ?c)
-  (test (neq 0 (str-compare (lastchar ?x) ?c)))
+(defrule zero
+  ?check <- (checkdiv 0)
   =>
-  (
-    retract ?check
-  )
+  (retract ?check)
+)
+
+(defrule one
+  ?check <- (checkdiv 1)
+  =>
+  (retract ?check)
 )
 
 (defrule divisible20
   ?check <- (checkdiv ?x)
-  (test (> (str-length ?x) 1))
-  (test (eq 0 (str-compare (lastchar ?x) "0")))
+  (test (<> ?x 0))
+  (test (= (mod ?x 10) 0))
   =>
   (
     retract ?check
   )
   (
-    assert (divisible "2" ?x)
+    assert (divisible 2 ?x)
   )
   (
-    assert (divisible "5" ?x)
+    assert (divisible 5 ?x)
   )
 )
 
 (defrule divisible22
   ?check <- (checkdiv ?x)
-  (test (eq 0 (str-compare (lastchar ?x) "2")))
+  (test (<> ?x 0))
+  (test (= (mod ?x 10) 2))
   =>
   (
     retract ?check
   )
   (
-    assert (divisible "2" ?x)
+    assert (divisible 2 ?x)
   )
 )
 
 (defrule divisible24
   ?check <- (checkdiv ?x)
-  (test (eq 0 (str-compare (lastchar ?x) "4")))
+  (test (<> ?x 0))
+  (test (= (mod ?x 10) 4))
   =>
   (
     retract ?check
   )
   (
-    assert (divisible "2" ?x)
+    assert (divisible 2 ?x)
   )
 )
 
 (defrule divisible26
   ?check <- (checkdiv ?x)
-  (test (eq 0 (str-compare (lastchar ?x) "6")))
+  (test (<> ?x 0))
+  (test (= (mod ?x 10) 6))
   =>
   (
     retract ?check
   )
   (
-    assert (divisible "2" ?x)
+    assert (divisible 2 ?x)
   )
 )
 
 (defrule divisible28
   ?check <- (checkdiv ?x)
-  (test (eq 0 (str-compare (lastchar ?x) "8")))
+  (test (<> ?x 0))
+  (test (= (mod ?x 10) 8))
   =>
   (
     retract ?check
   )
   (
-    assert (divisible "2" ?x)
+    assert (divisible 2 ?x)
   )
 )
 
 (defrule reducer
   ?rednum <- (fact_red ?x)
   =>
-  (retract ?rednum)
-  (assert (fact_red_sum ?x ?x 0))
+  (
+    retract ?rednum
+  )
+  (
+    assert (fact_red_sum ?x ?x 0)
+  )
 )
 
 (defrule red_helper
   ?rednum <- (fact_red_sum ?x ?x ?s)
   (test (> ?x 0))
   =>
-  (retract ?rednum)
-  (assert (fact_red_sum ?x (div ?x 10) (+ ?s (mod ?x 10))))
-)
-
-(deffunction factorial (?a)
-  (if
-    (or
-      (not
-        (integerp ?a)
-      )
-      (< ?a 0)
-    ) then
-    (printout t "Factorial Error!" crlf)
-   else
-    (if (= ?a 0) then
-      1
-    else
-      (* ?a (factorial (- ?a 1)))
-    )
+  (
+    retract ?rednum
+  )
+  (
+    assert (fact_red_sum ?x (div ?x 10) (+ ?s (mod ?x 10)))
   )
 )
 
@@ -128,128 +125,159 @@
   ?check <- (fact_red_rec ?x ?s)
   (fact_red_sum ?x 0 ?s)
   =>
-  (assert (divisible "3" ?x))
+  (
+    assert (divisible 3 ?x)
+  )
 )
 
 (defrule fact_last_check_3_rule3
   ?check <- (fact_last_check_3 ?x ?s)
   (test (= 3 ?s))
   =>
-  (retract ?check)
-  (assert (divisible "3" ?x))
+  (
+    retract ?check
+  )
+  (
+    assert (divisible 3 ?x)
+  )
 )
 
 (defrule fact_last_check_3_rule6
   ?check <- (fact_last_check_3 ?x ?s)
   (test (= 6 ?s))
   =>
-  (retract ?check)
-  (assert (divisible "3" ?x))
+  (
+    retract ?check
+  )
+  (
+    assert (divisible 3 ?x)
+  )
 )
 
 (defrule fact_last_check_3_rule9
   ?check <- (fact_last_check_3 ?x ?s)
   (test (= 9 ?s))
   =>
-  (retract ?check)
-  (assert (divisible "3" ?x))
+  (
+    retract ?check
+  )
+  (
+    assert (divisible 3 ?x)
+  )
 )
 
 (defrule divisible3
+  (checkdiv ?x)
+  (test (> ?x 10))
+  =>
+  (
+    assert (fact_red ?x)
+  )
+)
+
+(defrule divisible3_not5
   ?check <- (checkdiv ?x)
+  (test (> ?x 10))
+  (test (= (mod ?x 10) 5))
+  =>
+  (
+    retract ?check
+  )
+)
+
+(defrule divisible3_not10
+  ?check <- (checkdiv ?x)
+  (test (> ?x 10))
+  (test (= (mod ?x 10) 0))
+  =>
+  (
+    retract ?check
+  )
+)
+
+(defrule divisible313
+  ?check <- (checkdiv ?x)
+  (test (< ?x 10))
+  (test (= 3 ?x))
   =>
   (
     retract ?check
   )
   (
-    assert (divisible "3" ?x)
+    assert (divisible 3 ?x)
+  )
+)
+
+(defrule divisible316
+  ?check <- (checkdiv ?x)
+  (test (< ?x 10))
+  (test (= 6 ?x))
+  =>
+  (
+    retract ?check
+  )
+  (
+    assert (divisible 3 ?x)
+  )
+)
+
+(defrule divisible319
+  ?check <- (checkdiv ?x)
+  (test (< ?x 10))
+  (test (= 9 ?x))
+  =>
+  (
+    retract ?check
+  )
+  (
+    assert (divisible 3 ?x)
   )
 )
 
 (defrule divisible5
   ?check <- (checkdiv ?x)
-  (test (> (str-length ?x) 1))
-  (test (eq 0 (str-compare (lastchar ?x) "5")))
+  (test (= (mod ?x 10) 5))
   =>
   (
     retract ?check
-  )
-  (
-    assert (divisible "5" ?x)
-  )
-)
-
-(defrule divisible7
-  ?check <- (checkdiv ?x)
-  =>
-  (
-    retract ?check
-  )
-  (
-    assert (checkdiv ?x "7")
-  )
-)
-
-(defrule divisible11
-  ?check <- (checkdiv ?x)
-  =>
-  (
-    retract ?check
-  )
-  (
-    assert (checkdiv ?x "11")
-  )
-)
-
-(defrule divisible13
-  ?check <- (checkdiv ?x)
-  =>
-  (
-    retract ?check
-  )
-  (
-    assert (checkdiv ?x "13")
-  )
-)
-
-(defrule last-is-2
-  ?value <- (lastchar ?x)
-  (
-    test (
-      eq 0 (
-        str-compare ?x "0"
-      )
-    )
-  )
-  =>
-  (
-    retract ?value
-  )
-  (
-    assert (divisible 5 ?x)
-  )
-  (
-    assert (divisible 2 ?x)
-  )
-)
-
-(defrule last-is-5
-  ?value <- (lastchar ?x)
-  (
-    test (
-      eq 0 (
-        str-compare ?x "5"
-      )
-    )
-  )
-  =>
-  (
-    retract ?value
   )
   (
     assert (divisible 5 ?x)
   )
 )
+
+;(defrule divisible7
+;  ?check <- (checkdiv ?x)
+;  =>
+;  (
+;    retract ?check
+;  )
+;  (
+;    assert (checkdiv ?x 7)
+;  )
+;)
+
+;(defrule divisible11
+;  ?check <- (checkdiv ?x)
+;  =>
+;  (
+;    retract ?check
+;  )
+;  (
+;    assert (checkdiv ?x 11)
+;  )
+;)
+
+;(defrule divisible13
+;  ?check <- (checkdiv ?x)
+;  =>
+;  (
+;    retract ?check
+;  )
+;  (
+;    assert (checkdiv ?x 13)
+;  )
+;)
 
 (defrule divisible
   ?divisible <- (divisible ?c ?x)
@@ -309,36 +337,40 @@
 
 (printout t crlf "checks for the string version" crlf crlf)
 
-(assert (checkdiv "0"))
-(assert (checkdiv "1"))
-(assert (checkdiv "2"))
-(assert (checkdiv "3"))
-(assert (checkdiv "4"))
-(assert (checkdiv "5"))
-(assert (checkdiv "6"))
-(assert (checkdiv "7"))
-(assert (checkdiv "8"))
-(assert (checkdiv "9"))
-(assert (checkdiv "10"))
-(assert (checkdiv "11"))
-(assert (checkdiv "12"))
-(assert (checkdiv "13"))
-(assert (checkdiv "14"))
-(assert (checkdiv "15"))
-(assert (checkdiv "16"))
-(assert (checkdiv "17"))
-(assert (checkdiv "18"))
-(assert (checkdiv "19"))
-(assert (checkdiv "20"))
-(assert (checkdiv "21"))
-(assert (checkdiv "22"))
-(assert (checkdiv "23"))
-(assert (checkdiv "24"))
-(assert (checkdiv "25"))
-(assert (checkdiv "26"))
+(assert (checkdiv 0))
+(assert (checkdiv 1))
+(assert (checkdiv 2))
+(assert (checkdiv 3))
+(assert (checkdiv 4))
+(assert (checkdiv 5))
+(assert (checkdiv 6))
+(assert (checkdiv 7))
+(assert (checkdiv 8))
+(assert (checkdiv 9))
+(assert (checkdiv 10))
+(assert (checkdiv 11))
+(assert (checkdiv 12))
+(assert (checkdiv 13))
+(assert (checkdiv 14))
+(assert (checkdiv 15))
+(assert (checkdiv 16))
+(assert (checkdiv 17))
+(assert (checkdiv 18))
+(assert (checkdiv 19))
+(assert (checkdiv 20))
+(assert (checkdiv 21))
+(assert (checkdiv 22))
+(assert (checkdiv 23))
+(assert (checkdiv 24))
+(assert (checkdiv 25))
+(assert (checkdiv 26))
+(assert (checkdiv 27))
+(assert (checkdiv 28))
+(assert (checkdiv 29))
+(assert (checkdiv 30))
 
+(facts)
 (run)
 (facts)
 
-;(exit)
-
+(exit)
