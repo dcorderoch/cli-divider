@@ -299,88 +299,41 @@
   )
 )
 
-;(assert (checkdiv5 6))
-;(assert (checkdiv5 10))
-;(assert (checkdiv5 20))
-;(assert (checkdiv5 15))
-;
-;(facts)
-;(run)
-;(facts)
-;(exit)
-;(
-;  sub-string
-;  1 ; position
-;  2 ; length
-;  "abc" ; string
-;) ; expect "ab"
-;(
-;  sub-string
-;  0 ; position
-;  1 ; length
-;  "abc" ; string
-;) ; expect "a"
-;(
-;  sub-string
-;  0 ; position
-;  2 ; length
-;  "abc" ; string
-;) ; expect "ab"
-;
-;(assert (check-string (sub-string 0 0 "abc")))
-;(assert (check-string (sub-string 0 1 "abc")))
-;(assert (check-string (sub-string 0 2 "abc")))
-;(assert (check-string (sub-string 0 3 "abc")))
-;
-;(facts)
-;(run)
-;(facts)
-
-; (str-length "abc")
-; (- (str-length "abc") 1)
-; (- (str-length "abc") 2)
-; (sub-string (str-length "123") (str-length "123") "123")
-; (eval (sub-string (str-length "123") (str-length "123") "123"))
-;
-; (eval (str-cat "0" 23))
-
-(printout t crlf "checks for the string version" crlf crlf)
-
-(assert (checkdiv 0))
-(assert (checkdiv 1))
-(assert (checkdiv 2))
-(assert (checkdiv 3))
-(assert (checkdiv 4))
-(assert (checkdiv 5))
-(assert (checkdiv 6))
-(assert (checkdiv 7))
-(assert (checkdiv 8))
-(assert (checkdiv 9))
-(assert (checkdiv 10))
-(assert (checkdiv 11))
-(assert (checkdiv 12))
-(assert (checkdiv 13))
-(assert (checkdiv 14))
-(assert (checkdiv 15))
-(assert (checkdiv 16))
-(assert (checkdiv 17))
-(assert (checkdiv 18))
-(assert (checkdiv 19))
-(assert (checkdiv 20))
-(assert (checkdiv 21))
-(assert (checkdiv 22))
-(assert (checkdiv 23))
-(assert (checkdiv 24))
-(assert (checkdiv 25))
-(assert (checkdiv 26))
-(assert (checkdiv 27))
-(assert (checkdiv 28))
-(assert (checkdiv 29))
-(assert (checkdiv 30))
-(assert (checkdiv 35))
-(assert (checkdiv 40))
-(assert (checkdiv 60))
-(assert (checkdiv 75))
+(assert (checkdiv 0))  ; none
+(assert (checkdiv 1))  ; none
+(assert (checkdiv 2))  ; 2 only? maybe none
+(assert (checkdiv 3))  ; 3 only? maybe none
+(assert (checkdiv 4))  ; 2 only
+(assert (checkdiv 5))  ; 5 only? maybe none
+(assert (checkdiv 6))  ; 2 and 3
+(assert (checkdiv 7))  ; 7 only? maybe none
+(assert (checkdiv 8))  ; 2 only
+(assert (checkdiv 9))  ; 3 only
+(assert (checkdiv 10)) ; 2 and 5
+(assert (checkdiv 11)) ; 11 only? maybe none
+(assert (checkdiv 12)) ; 2 and 3
+(assert (checkdiv 13)) ; 13 only? maybe none
+(assert (checkdiv 14)) ; 2 and 7
+(assert (checkdiv 15)) ; 3 and 5
+(assert (checkdiv 16)) ; 2 only
+(assert (checkdiv 17)) ; none
+(assert (checkdiv 18)) ; 2 and 3
+(assert (checkdiv 19)) ; none
+(assert (checkdiv 20)) ; 2 and 5
+(assert (checkdiv 21)) ; 3 and 7
+(assert (checkdiv 22)) ; 2 and 11
+(assert (checkdiv 23)) ; none
+(assert (checkdiv 24)) ; 2 and 3
+(assert (checkdiv 25)) ; 5 only
+(assert (checkdiv 26)) ; 2 and 13
+(assert (checkdiv 27)) ; 3 only
+(assert (checkdiv 28)) ; 2 and 7
+(assert (checkdiv 29)) ; none
+(assert (checkdiv 30)) ; 2, 3 and 5
+(assert (checkdiv 35)) ; 5 and 7
+(assert (checkdiv 40)) ; 2 and 5
+(assert (checkdiv 60)) ; 2, 3 and 5
+(assert (checkdiv 75)) ; 3 and 5
 
 (facts)
 (run)
