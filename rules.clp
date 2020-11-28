@@ -7,6 +7,12 @@
   )
 )
 
+(defrule looking
+  (checkdiv ?x)
+  =>
+  (assert (looking ?x))
+)
+
 (defrule zero
   ?check <- (checkdiv 0)
   =>
@@ -56,12 +62,12 @@
   (test (<> ?x 0))
   (test (= (mod ?x 10) 4))
   =>
-  (
-    retract ?check
-  )
   ;(
-  ;  assert (divisible 2 ?x)
+  ;  retract ?check
   ;)
+  (
+    assert (divisible 2 ?x)
+  )
 )
 
 (defrule divisible26
@@ -124,7 +130,6 @@
   (fact_red_sum ?x 0 ?s)
   =>
   (if (> ?s 10) then
-    (assert (fact_red_rec ?x ?s))
     (assert (fact_red ?s))
    else
     (assert (fact_last_check_3 ?x ?s))
@@ -133,10 +138,10 @@
 
 (defrule last_check_rule
   (fact_last_check_3 ?x ?s)
-  (divisible ?s)
+  (divisible 3 ?s)
   =>
   (
-    assert (divisible ?x)
+    assert (divisible 3 ?x)
   )
 )
 
@@ -146,16 +151,6 @@
   =>
   (
     retract ?rednum
-  )
-)
-
-(defrule fact_red_recursive
-  (fact_red_rec ?x ?s)
-  ;?check <- (fact_red_rec ?x ?s)
-  (fact_red_sum ?x 0 ?s)
-  =>
-  (
-    assert (divisible 3 ?x)
   )
 )
 
@@ -294,6 +289,7 @@
 (defrule divisible
   (divisible ?c ?x)
   ;?divisible <- (divisible ?c ?x)
+  (looking ?x)
   =>
   ;(
   ;  retract ?divisible
