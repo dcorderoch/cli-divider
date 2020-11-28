@@ -3,5 +3,5 @@
 to run
 
 ```
-./clips -f rules.clp
+clips -f rules.clp
 ```
