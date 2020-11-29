@@ -1,101 +1,41 @@
-(deffunction lastchar (?s)
-  (
-    return
-      (
-        sub-string (str-length ?s) (str-length ?s) ?s
-      )
-  )
-)
-
 (defrule looking
   (checkdiv ?x)
   =>
   (assert (looking ?x))
 )
 
-(defrule zero
-  ?check <- (checkdiv 0)
-  =>
-  (retract ?check)
-)
+;(defrule zero
+;  ?check <- (checkdiv 0)
+;  =>
+;  (retract ?check)
+;)
 
-(defrule one
-  ?check <- (checkdiv 1)
-  =>
-  (retract ?check)
-)
+;(defrule one
+;  ?check <- (checkdiv 1)
+;  =>
+;  (retract ?check)
+;)
 
 (defrule divisible20
   (checkdiv ?x)
-  ;?check <- (checkdiv ?x)
   (test (<> ?x 0))
   (test (= (mod ?x 10) 0))
   =>
-  ;(
-  ;  retract ?check
-  ;)
-  (
-    assert (divisible 2 ?x)
-  )
-  (
-    assert (divisible 5 ?x)
-  )
+  (assert (divisible 2 ?x))
+  (assert (divisible 5 ?x))
 )
 
-(defrule divisible22
+(defrule divisible2
   (checkdiv ?x)
-  ;?check <- (checkdiv ?x)
   (test (<> ?x 0))
-  (test (= (mod ?x 10) 2))
-  =>
-  ;(
-  ;  retract ?check
-  ;)
   (
-    assert (divisible 2 ?x)
+    or (= (mod ?x 10) 2)
+        (= (mod ?x 10) 4)
+        (= (mod ?x 10) 6)
+        (= (mod ?x 10) 8)
   )
-)
-
-(defrule divisible24
-  (checkdiv ?x)
-  ;?check <- (checkdiv ?x)
-  (test (<> ?x 0))
-  (test (= (mod ?x 10) 4))
   =>
-  ;(
-  ;  retract ?check
-  ;)
-  (
-    assert (divisible 2 ?x)
-  )
-)
-
-(defrule divisible26
-  (checkdiv ?x)
-  ;?check <- (checkdiv ?x)
-  (test (<> ?x 0))
-  (test (= (mod ?x 10) 6))
-  =>
-  ;(
-  ;  retract ?check
-  ;)
-  (
-    assert (divisible 2 ?x)
-  )
-)
-
-(defrule divisible28
-  (checkdiv ?x)
-  ;?check <- (checkdiv ?x)
-  (test (<> ?x 0))
-  (test (= (mod ?x 10) 8))
-  =>
-  ;(
-  ;  retract ?check
-  ;)
-  (
-    assert (divisible 2 ?x)
-  )
+  (assert (divisible 2 ?x))
 )
 
 (defrule reducer
@@ -279,27 +219,42 @@
   )
 )
 
-;(defrule divisible7
-;  ?check <- (checkdiv ?x)
-;  =>
-;  (
-;    retract ?check
-;  )
-;  (
-;    assert (checkdiv ?x 7)
-;  )
-;)
+(defrule divisible7
+  ?check <- (checkdiv ?x)
+  =>
+  (bind ?n ?x)
+  (while (> ?n 10)
+    (
+      bind ?n (
+        - (div ?n 10) (* (mod ?n 10) 2)
+      )
+    )
+  )
+  (if (or (= ?n -7)
+          (= ?n  0)
+          (= ?n  7)) then
+    (assert (divisible 7 ?x))
+  )
+)
 
-;(defrule divisible11
-;  ?check <- (checkdiv ?x)
-;  =>
-;  (
-;    retract ?check
-;  )
-;  (
-;    assert (checkdiv ?x 11)
-;  )
-;)
+(defrule divisible11
+  (checkdiv ?x)
+  =>
+  (bind ?n ?x)
+  (bind ?sign 1)
+  (bind ?sum 0)
+  (while (> ?n 0)
+    (bind ?sum (+ ?sum (* ?sign (mod ?n 10))))
+    (bind ?sign (* -1 ?sign))
+    (if (<= ?n 0) then
+      (break)
+    )
+    (bind ?n (div ?n 10))
+  )
+  (if (= ?sum 0) then
+    (assert (divisible 11 ?x))
+  )
+)
 
 ;(defrule divisible13
 ;  ?check <- (checkdiv ?x)
@@ -321,50 +276,33 @@
   ;  retract ?divisible
   ;)
   (
-    printout t ?x " is divisible by (constant) " ?c crlf
+    printout t ?x " is divisible by " ?c crlf
   )
 )
 
-;(assert (checkdiv 0))  ; none
-;(assert (checkdiv 1))  ; none
-;(assert (checkdiv 2))  ; 2 only? maybe none
-;(assert (checkdiv 3))  ; 3 only? maybe none
-;(assert (checkdiv 4))  ; 2 only
-;(assert (checkdiv 5))  ; 5 only? maybe none
-;(assert (checkdiv 6))  ; 2 and 3
-;(assert (checkdiv 7))  ; 7 only? maybe none
-;(assert (checkdiv 8))  ; 2 only
-;(assert (checkdiv 9))  ; 3 only
-;(assert (checkdiv 10)) ; 2 and 5
-;(assert (checkdiv 11)) ; 11 only? maybe none
-;(assert (checkdiv 12)) ; 2 and 3
-;(assert (checkdiv 13)) ; 13 only? maybe none
-;(assert (checkdiv 14)) ; 2 and 7
-;(assert (checkdiv 15)) ; 3 and 5
-;(assert (checkdiv 16)) ; 2 only
-;(assert (checkdiv 17)) ; none
-;(assert (checkdiv 18)) ; 2 and 3
-;(assert (checkdiv 19)) ; none
-;(assert (checkdiv 20)) ; 2 and 5
-;(assert (checkdiv 21)) ; 3 and 7
-;(assert (checkdiv 22)) ; 2 and 11
-;(assert (checkdiv 23)) ; none
-;(assert (checkdiv 24)) ; 2 and 3
-;(assert (checkdiv 25)) ; 5 only
-;(assert (checkdiv 26)) ; 2 and 13
-;(assert (checkdiv 27)) ; 3 only
-;(assert (checkdiv 28)) ; 2 and 7
-;(assert (checkdiv 29)) ; none
-;(assert (checkdiv 30)) ; 2, 3 and 5
-;(assert (checkdiv 35)) ; 5 and 7
-;(assert (checkdiv 40)) ; 2 and 5
-;(assert (checkdiv 60)) ; 2, 3 and 5
-;(assert (checkdiv 75)) ; 3 and 5
+(defrule get-input
+  ?f <- (get-next-input)
+  =>
+  (printout t "Input a number to check (or, 'exit' without quotes to end)? ")
+  (bind ?input (readline))
+  (if (neq ?input "exit")
+    then
+      ;(retract ?f)
+      ;(assert (get-next-input))
+      (assert (print ?input))
+    else
+      (exit)
+  )
+)
 
-(assert (checkdiv 999999))
+(defrule print-input
+  ?input <- (print ?x)
+  =>
+  (retract ?input)
+  ;(assert (get-next-input)) ; this is the thing that would move
+  (assert (checkdiv (eval ?x)))
+  (run)
+)
 
-(facts)
+(assert (get-next-input))
 (run)
-(facts)
-
-(exit)
