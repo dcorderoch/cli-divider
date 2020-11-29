@@ -4,219 +4,82 @@
   (assert (looking ?x))
 )
 
-;(defrule zero
-;  ?check <- (checkdiv 0)
-;  =>
-;  (retract ?check)
-;)
-
-;(defrule one
-;  ?check <- (checkdiv 1)
-;  =>
-;  (retract ?check)
-;)
-
-(defrule divisible20
-  (checkdiv ?x)
-  (test (<> ?x 0))
-  (test (= (mod ?x 10) 0))
-  =>
-  (assert (divisible 2 ?x))
-  (assert (divisible 5 ?x))
-)
-
 (defrule divisible2
   (checkdiv ?x)
-  (test (<> ?x 0))
-  (
-    or (= (mod ?x 10) 2)
-        (= (mod ?x 10) 4)
-        (= (mod ?x 10) 6)
-        (= (mod ?x 10) 8)
+  (test
+    (or (= (mod ?x 10) 0)
+         (= (mod ?x 10) 2)
+         (= (mod ?x 10) 4)
+         (= (mod ?x 10) 6)
+         (= (mod ?x 10) 8)
+    )
   )
   =>
+  (assert (checked2 ?x))
   (assert (divisible 2 ?x))
 )
 
-(defrule reducer
-  (fact_red ?x)
-  ;?rednum <- (fact_red ?x)
-  =>
-  ;(
-  ;  retract ?rednum
-  ;)
-  (
-    assert (fact_red_sum ?x ?x 0)
+(defrule notdivisible2
+  (checkdiv ?x)
+  (test
+    (or
+      (= (mod ?x 10) 1)
+      (= (mod ?x 10) 3)
+      (= (mod ?x 10) 5)
+      (= (mod ?x 10) 7)
+      (= (mod ?x 10) 9)
+    )
   )
-)
-
-(defrule red_helper
-  (fact_red_sum ?x ?y ?s)
-  ;?rednum <- (fact_red_sum ?x ?x ?s)
-  (test (<> ?y 0))
   =>
-  ;(
-  ;  retract ?rednum
-  ;)
-  ;(
-  ;  printout t "red_helper with: " ?x ", " ?y ", and " ?s crlf
-  ;)
-  (
-    assert (fact_red_sum ?x (div ?y 10) (+ ?s (mod ?y 10)))
-  )
-)
-
-(defrule the_fix3
-  (fact_red_sum ?x 0 ?y)
-  (fact_last_check_3 ?y 3)
-  =>
-  (assert (divisible 3 ?x))
-)
-
-(defrule the_fix6
-  (fact_red_sum ?x 0 ?y)
-  (fact_last_check_3 ?y 6)
-  =>
-  (assert (divisible 3 ?x))
-)
-
-(defrule the_fix9
-  (fact_red_sum ?x 0 ?y)
-  (fact_last_check_3 ?y 9)
-  =>
-  (assert (divisible 3 ?x))
-)
-
-(defrule red_end
-  (fact_red_sum ?x 0 ?s)
-  =>
-  (if (> ?s 10) then
-    (assert (fact_red ?s))
-   else
-    (assert (fact_last_check_3 ?x ?s))
-  )
-)
-
-(defrule last_check_rule
-  (fact_last_check_3 ?x ?s)
-  (divisible 3 ?s)
-  =>
-  (
-    assert (divisible 3 ?x)
-  )
-)
-
-(defrule red_end_prune
-  (fact_red_sum ?x ?o ?s)
-  ;?rednum <- (fact_red_sum ?x ?o ?s)
-  (test (<> ?o 0))
-  =>
-  ;(
-  ;  retract ?rednum
-  ;)
-)
-
-(defrule fact_last_check_3_rule3
-  (fact_last_check_3 ?x ?s)
-  ;?check <- (fact_last_check_3 ?x ?s)
-  (test (= 3 ?s))
-  =>
-  ;(
-  ;  retract ?check
-  ;)
-  (
-    assert (divisible 3 ?x)
-  )
-)
-
-(defrule fact_last_check_3_rule6
-  (fact_last_check_3 ?x ?s)
-  ;?check <- (fact_last_check_3 ?x ?s)
-  (test (= 6 ?s))
-  =>
-  ;(
-  ;  retract ?check
-  ;)
-  (
-    assert (divisible 3 ?x)
-  )
-)
-
-(defrule fact_last_check_3_rule9
-  (fact_last_check_3 ?x ?s)
-  ;?check <- (fact_last_check_3 ?x ?s)
-  (test (= 9 ?s))
-  =>
-  ;(
-  ;  retract ?check
-  ;)
-  (
-    assert (divisible 3 ?x)
-  )
+  (assert (checked2 ?x))
 )
 
 (defrule divisible3
   (checkdiv ?x)
-  (test (> ?x 10))
   =>
-  (
-    assert (fact_red ?x)
+  (bind ?n ?x)
+  (bind ?sum 0)
+  (while (> ?n 0)
+    (bind ?sum (+ ?sum (mod ?n 10)))
+    (bind ?n (div ?n 10))
   )
-)
-
-(defrule divisible313
-  (checkdiv ?x)
-  ;?check <- (checkdiv ?x)
-  (test (< ?x 10))
-  (test (= 3 ?x))
-  =>
-  ;(
-  ;  retract ?check
-  ;)
-  (
-    assert (divisible 3 ?x)
+  (while (> ?sum 10) then
+    (bind ?n ?sum)
+    (bind ?sum 0)
+    (while (> ?n 0)
+      (bind ?sum (+ ?sum (mod ?n 10)))
+      (bind ?n (div ?n 10))
+    )
   )
-)
-
-(defrule divisible316
-  (checkdiv ?x)
-  ;?check <- (checkdiv ?x)
-  (test (< ?x 10))
-  (test (= 6 ?x))
-  =>
-  ;(
-  ;  retract ?check
-  ;)
-  (
-    assert (divisible 3 ?x)
+  (if
+    (or
+      (= ?sum 3)
+      (= ?sum 6)
+      (= ?sum 9)
+    ) then
+    (assert (divisible 3 ?x))
   )
-)
-
-(defrule divisible319
-  (checkdiv ?x)
-  ;?check <- (checkdiv ?x)
-  (test (< ?x 10))
-  (test (= 9 ?x))
-  =>
-  ;(
-  ;  retract ?check
-  ;)
-  (
-    assert (divisible 3 ?x)
-  )
+  (assert (checked3 ?x))
 )
 
 (defrule divisible5
   (checkdiv ?x)
-  ;?check <- (checkdiv ?x)
-  (test (= (mod ?x 10) 5))
-  =>
-  ;(
-  ;  retract ?check
-  ;)
-  (
-    assert (divisible 5 ?x)
+  (test
+    (or (= (mod ?x 10) 5)
+        (= (mod ?x 10) 0)
+    )
   )
+  =>
+  (assert (divisible 5 ?x))
+  (assert (checked5 ?x))
+)
+
+(defrule notdivisible5
+  (checkdiv ?x)
+  (<> (mod ?x 10) 5)
+  (<> (mod ?x 10) 0)
+  =>
+  (assert (checked5 ?x))
 )
 
 (defrule divisible7
@@ -235,6 +98,7 @@
           (= ?n  7)) then
     (assert (divisible 7 ?x))
   )
+  (assert (checked7 ?x))
 )
 
 (defrule divisible11
@@ -254,27 +118,50 @@
   (if (= ?sum 0) then
     (assert (divisible 11 ?x))
   )
+  (assert (checked11 ?x))
 )
 
-;(defrule divisible13
-;  ?check <- (checkdiv ?x)
-;  =>
-;  (
-;    retract ?check
-;  )
-;  (
-;    assert (checkdiv ?x 13)
-;  )
-;)
+(defrule divisible13
+  ?check <- (checkdiv ?x)
+  =>
+  (bind ?n ?x)
+  (while (> ?n 10)
+    (
+      bind ?n (
+        - (div ?n 10) (* (mod ?n 10) 9)
+      )
+    )
+  )
+  (if (or (= (abs ?n)  0)
+          (= (abs ?n) 13)
+          (= (abs ?n) 26)
+          (= (abs ?n) 39)
+          (= (abs ?n) 52)
+          (= (abs ?n) 65)
+          (= (abs ?n) 78)
+      ) then
+    (assert (divisible 13 ?x))
+  )
+  (assert (checked13 ?x))
+)
+
+(defrule allchecks
+  (checked2 ?x)
+  (checked3 ?x)
+  (checked5 ?x)
+  (checked7 ?x)
+  (checked11 ?x)
+  (checked13 ?x)
+  ?looking <- (looking ?x)
+  =>
+  (retract ?looking)
+  (assert (get-next-input))
+)
 
 (defrule divisible
   (divisible ?c ?x)
-  ;?divisible <- (divisible ?c ?x)
   (looking ?x)
   =>
-  ;(
-  ;  retract ?divisible
-  ;)
   (
     printout t ?x " is divisible by " ?c crlf
   )
@@ -287,8 +174,7 @@
   (bind ?input (readline))
   (if (neq ?input "exit")
     then
-      ;(retract ?f)
-      ;(assert (get-next-input))
+      (retract ?f)
       (assert (print ?input))
     else
       (exit)
@@ -299,7 +185,6 @@
   ?input <- (print ?x)
   =>
   (retract ?input)
-  ;(assert (get-next-input)) ; this is the thing that would move
   (assert (checkdiv (eval ?x)))
   (run)
 )
