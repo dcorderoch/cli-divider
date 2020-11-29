@@ -126,6 +126,27 @@
   )
 )
 
+(defrule the_fix3
+  (fact_red_sum ?x 0 ?y)
+  (fact_last_check_3 ?y 3)
+  =>
+  (assert (divisible 3 ?x))
+)
+
+(defrule the_fix6
+  (fact_red_sum ?x 0 ?y)
+  (fact_last_check_3 ?y 6)
+  =>
+  (assert (divisible 3 ?x))
+)
+
+(defrule the_fix9
+  (fact_red_sum ?x 0 ?y)
+  (fact_last_check_3 ?y 9)
+  =>
+  (assert (divisible 3 ?x))
+)
+
 (defrule red_end
   (fact_red_sum ?x 0 ?s)
   =>
@@ -146,12 +167,13 @@
 )
 
 (defrule red_end_prune
-  ?rednum <- (fact_red_sum ?x ?o ?s)
+  (fact_red_sum ?x ?o ?s)
+  ;?rednum <- (fact_red_sum ?x ?o ?s)
   (test (<> ?o 0))
   =>
-  (
-    retract ?rednum
-  )
+  ;(
+  ;  retract ?rednum
+  ;)
 )
 
 (defrule fact_last_check_3_rule3
@@ -203,51 +225,55 @@
 )
 
 (defrule divisible313
-  ?check <- (checkdiv ?x)
+  (checkdiv ?x)
+  ;?check <- (checkdiv ?x)
   (test (< ?x 10))
   (test (= 3 ?x))
   =>
-  (
-    retract ?check
-  )
+  ;(
+  ;  retract ?check
+  ;)
   (
     assert (divisible 3 ?x)
   )
 )
 
 (defrule divisible316
-  ?check <- (checkdiv ?x)
+  (checkdiv ?x)
+  ;?check <- (checkdiv ?x)
   (test (< ?x 10))
   (test (= 6 ?x))
   =>
-  (
-    retract ?check
-  )
+  ;(
+  ;  retract ?check
+  ;)
   (
     assert (divisible 3 ?x)
   )
 )
 
 (defrule divisible319
-  ?check <- (checkdiv ?x)
+  (checkdiv ?x)
+  ;?check <- (checkdiv ?x)
   (test (< ?x 10))
   (test (= 9 ?x))
   =>
-  (
-    retract ?check
-  )
+  ;(
+  ;  retract ?check
+  ;)
   (
     assert (divisible 3 ?x)
   )
 )
 
 (defrule divisible5
-  ?check <- (checkdiv ?x)
+  (checkdiv ?x)
+  ;?check <- (checkdiv ?x)
   (test (= (mod ?x 10) 5))
   =>
-  (
-    retract ?check
-  )
+  ;(
+  ;  retract ?check
+  ;)
   (
     assert (divisible 5 ?x)
   )
@@ -299,41 +325,43 @@
   )
 )
 
-(assert (checkdiv 0))  ; none
-(assert (checkdiv 1))  ; none
-(assert (checkdiv 2))  ; 2 only? maybe none
-(assert (checkdiv 3))  ; 3 only? maybe none
-(assert (checkdiv 4))  ; 2 only
-(assert (checkdiv 5))  ; 5 only? maybe none
-(assert (checkdiv 6))  ; 2 and 3
-(assert (checkdiv 7))  ; 7 only? maybe none
-(assert (checkdiv 8))  ; 2 only
-(assert (checkdiv 9))  ; 3 only
-(assert (checkdiv 10)) ; 2 and 5
-(assert (checkdiv 11)) ; 11 only? maybe none
-(assert (checkdiv 12)) ; 2 and 3
-(assert (checkdiv 13)) ; 13 only? maybe none
-(assert (checkdiv 14)) ; 2 and 7
-(assert (checkdiv 15)) ; 3 and 5
-(assert (checkdiv 16)) ; 2 only
-(assert (checkdiv 17)) ; none
-(assert (checkdiv 18)) ; 2 and 3
-(assert (checkdiv 19)) ; none
-(assert (checkdiv 20)) ; 2 and 5
-(assert (checkdiv 21)) ; 3 and 7
-(assert (checkdiv 22)) ; 2 and 11
-(assert (checkdiv 23)) ; none
-(assert (checkdiv 24)) ; 2 and 3
-(assert (checkdiv 25)) ; 5 only
-(assert (checkdiv 26)) ; 2 and 13
-(assert (checkdiv 27)) ; 3 only
-(assert (checkdiv 28)) ; 2 and 7
-(assert (checkdiv 29)) ; none
-(assert (checkdiv 30)) ; 2, 3 and 5
-(assert (checkdiv 35)) ; 5 and 7
-(assert (checkdiv 40)) ; 2 and 5
-(assert (checkdiv 60)) ; 2, 3 and 5
-(assert (checkdiv 75)) ; 3 and 5
+;(assert (checkdiv 0))  ; none
+;(assert (checkdiv 1))  ; none
+;(assert (checkdiv 2))  ; 2 only? maybe none
+;(assert (checkdiv 3))  ; 3 only? maybe none
+;(assert (checkdiv 4))  ; 2 only
+;(assert (checkdiv 5))  ; 5 only? maybe none
+;(assert (checkdiv 6))  ; 2 and 3
+;(assert (checkdiv 7))  ; 7 only? maybe none
+;(assert (checkdiv 8))  ; 2 only
+;(assert (checkdiv 9))  ; 3 only
+;(assert (checkdiv 10)) ; 2 and 5
+;(assert (checkdiv 11)) ; 11 only? maybe none
+;(assert (checkdiv 12)) ; 2 and 3
+;(assert (checkdiv 13)) ; 13 only? maybe none
+;(assert (checkdiv 14)) ; 2 and 7
+;(assert (checkdiv 15)) ; 3 and 5
+;(assert (checkdiv 16)) ; 2 only
+;(assert (checkdiv 17)) ; none
+;(assert (checkdiv 18)) ; 2 and 3
+;(assert (checkdiv 19)) ; none
+;(assert (checkdiv 20)) ; 2 and 5
+;(assert (checkdiv 21)) ; 3 and 7
+;(assert (checkdiv 22)) ; 2 and 11
+;(assert (checkdiv 23)) ; none
+;(assert (checkdiv 24)) ; 2 and 3
+;(assert (checkdiv 25)) ; 5 only
+;(assert (checkdiv 26)) ; 2 and 13
+;(assert (checkdiv 27)) ; 3 only
+;(assert (checkdiv 28)) ; 2 and 7
+;(assert (checkdiv 29)) ; none
+;(assert (checkdiv 30)) ; 2, 3 and 5
+;(assert (checkdiv 35)) ; 5 and 7
+;(assert (checkdiv 40)) ; 2 and 5
+;(assert (checkdiv 60)) ; 2, 3 and 5
+;(assert (checkdiv 75)) ; 3 and 5
+
+(assert (checkdiv 999999))
 
 (facts)
 (run)
