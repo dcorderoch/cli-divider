@@ -37,6 +37,7 @@
 (defrule divisible3
   (checkdiv ?x)
   =>
+  (assert (checked3 ?x))
   (bind ?n ?x)
   (bind ?sum 0)
   (while (> ?n 0)
@@ -59,25 +60,29 @@
     ) then
     (assert (divisible 3 ?x))
   )
-  (assert (checked3 ?x))
 )
 
 (defrule divisible5
   (checkdiv ?x)
   (test
-    (or (= (mod ?x 10) 5)
-        (= (mod ?x 10) 0)
+    (or
+      (= (mod ?x 10) 5)
+      (= (mod ?x 10) 0)
     )
   )
   =>
-  (assert (divisible 5 ?x))
   (assert (checked5 ?x))
+  (assert (divisible 5 ?x))
 )
 
 (defrule notdivisible5
   (checkdiv ?x)
-  (<> (mod ?x 10) 5)
-  (<> (mod ?x 10) 0)
+  (test
+    (and
+      (<> (mod ?x 10) 5)
+      (<> (mod ?x 10) 0)
+    )
+  )
   =>
   (assert (checked5 ?x))
 )
@@ -104,6 +109,7 @@
 (defrule divisible11
   (checkdiv ?x)
   =>
+  (assert (checked11 ?x))
   (bind ?n ?x)
   (bind ?sign 1)
   (bind ?sum 0)
@@ -118,12 +124,12 @@
   (if (= ?sum 0) then
     (assert (divisible 11 ?x))
   )
-  (assert (checked11 ?x))
 )
 
 (defrule divisible13
   ?check <- (checkdiv ?x)
   =>
+  (assert (checked13 ?x))
   (bind ?n ?x)
   (while (> ?n 10)
     (
@@ -142,18 +148,25 @@
       ) then
     (assert (divisible 13 ?x))
   )
-  (assert (checked13 ?x))
 )
 
 (defrule allchecks
-  (checked2 ?x)
-  (checked3 ?x)
-  (checked5 ?x)
-  (checked7 ?x)
-  (checked11 ?x)
-  (checked13 ?x)
+  ?ch <- (checkdiv ?x)
+  ?ch2 <- (checked2 ?x)
+  ?ch3 <- (checked3 ?x)
+  ?ch5 <- (checked5 ?x)
+  ?ch7 <- (checked7 ?x)
+  ?ch11 <- (checked11 ?x)
+  ?ch13 <- (checked13 ?x)
   ?looking <- (looking ?x)
   =>
+  (retract ?ch)
+  (retract ?ch2)
+  (retract ?ch3)
+  (retract ?ch5)
+  (retract ?ch7)
+  (retract ?ch11)
+  (retract ?ch13)
   (retract ?looking)
   (assert (get-next-input))
 )
@@ -170,7 +183,7 @@
 (defrule get-input
   ?f <- (get-next-input)
   =>
-  (printout t "Input a number to check (or, 'exit' without quotes to end)? ")
+  (printout t "Input a number to check (or, 'exit' without quotes to end) ")
   (bind ?input (readline))
   (if (neq ?input "exit")
     then
