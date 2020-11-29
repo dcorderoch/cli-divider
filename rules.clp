@@ -4,8 +4,15 @@
   (assert (looking ?x))
 )
 
+(defrule zero
+  (checkdiv 0)
+  =>
+  (assert (get-next-input))
+)
+
 (defrule divisible2
   (checkdiv ?x)
+  (test (> ?x 0))
   (test
     (or (= (mod ?x 10) 0)
          (= (mod ?x 10) 2)
@@ -21,6 +28,7 @@
 
 (defrule notdivisible2
   (checkdiv ?x)
+  (test (> ?x 0))
   (test
     (or
       (= (mod ?x 10) 1)
@@ -36,6 +44,7 @@
 
 (defrule divisible3
   (checkdiv ?x)
+  (test (> ?x 0))
   =>
   (assert (checked3 ?x))
   (bind ?n ?x)
@@ -64,6 +73,7 @@
 
 (defrule divisible5
   (checkdiv ?x)
+  (test (> ?x 0))
   (test
     (or
       (= (mod ?x 10) 5)
@@ -77,6 +87,7 @@
 
 (defrule notdivisible5
   (checkdiv ?x)
+  (test (> ?x 0))
   (test
     (and
       (<> (mod ?x 10) 5)
@@ -89,6 +100,7 @@
 
 (defrule divisible7
   ?check <- (checkdiv ?x)
+  (test (> ?x 0))
   =>
   (bind ?n ?x)
   (while (> ?n 10)
@@ -108,6 +120,7 @@
 
 (defrule divisible11
   (checkdiv ?x)
+  (test (> ?x 0))
   =>
   (assert (checked11 ?x))
   (bind ?n ?x)
@@ -128,6 +141,7 @@
 
 (defrule divisible13
   ?check <- (checkdiv ?x)
+  (test (> ?x 0))
   =>
   (assert (checked13 ?x))
   (bind ?n ?x)
