@@ -190,16 +190,16 @@
   (looking ?x)
   =>
   (
-    printout t ?x " is divisible by " ?c crlf
+    printout t ?x " es divisible por " ?c crlf
   )
 )
 
 (defrule get-input
   ?f <- (get-next-input)
   =>
-  (printout t "Input a number to check (or, 'exit' without quotes to end) ")
+  (printout t "Introduzca un número, o introduzca 'fin' sin comillas para terminar ")
   (bind ?input (readline))
-  (if (neq ?input "exit")
+  (if (neq ?input "fin")
     then
       (retract ?f)
       (assert (print ?input))
