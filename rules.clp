@@ -9,6 +9,7 @@
 (defrule zero
   (checkdiv 0)
   =>
+  (printout t crlf "0 no es un número primo" crlf crlf)
   (assert (get-next-input))
 )
 
@@ -192,12 +193,12 @@
   (retract ?checkdivisors)
   (if (= ?*x* 0) then
     (if (< (sqrt ?x) 13) then
-      (printout t crlf ?x " es un número primo" crlf)
+      (printout t crlf ?x " es un número primo" crlf crlf)
      else
-      (printout t crlf "no puedo determinar si " ?x " es un número primo" crlf)
+      (printout t crlf "no puedo determinar si " ?x " es un número primo" crlf crlf)
     )
    else
-    (printout t crlf ?x " no es un número primo" crlf)
+    (printout t crlf ?x " no es un número primo" crlf crlf)
   )
   (assert (primecheck))
   (bind ?*x* 0)
