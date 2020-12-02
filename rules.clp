@@ -240,7 +240,7 @@
 (defrule get-input
   ?f <- (get-next-input)
   =>
-  (printout t "Introduzca un número, o introduzca 'fin' sin comillas para terminar" crlf ">")
+  (printout t "Introduzca un número entero, mayor que 0 (cero)," crlf "o introduzca 'fin' sin comillas para terminar" crlf ">")
   (bind ?input (readline))
   (if (neq ?input "fin")
     then
