@@ -1,3 +1,5 @@
+(defglobal ?*x* = 0)
+
 (defrule looking
   (checkdiv ?x)
   =>
@@ -23,6 +25,7 @@
   )
   =>
   (assert (checked2 ?x))
+  (bind ?*x* (+ 1 ?*x*))
   (assert (divisible 2 ?x))
 )
 
@@ -67,6 +70,7 @@
       (= ?sum 6)
       (= ?sum 9)
     ) then
+    (bind ?*x* (+ 1 ?*x*))
     (assert (divisible 3 ?x))
   )
 )
@@ -82,6 +86,7 @@
   )
   =>
   (assert (checked5 ?x))
+  (bind ?*x* (+ 1 ?*x*))
   (assert (divisible 5 ?x))
 )
 
@@ -113,6 +118,7 @@
   (if (or (= ?n -7)
           (= ?n  0)
           (= ?n  7)) then
+    (bind ?*x* (+ 1 ?*x*))
     (assert (divisible 7 ?x))
   )
   (assert (checked7 ?x))
@@ -135,6 +141,7 @@
     (bind ?n (div ?n 10))
   )
   (if (= ?sum 0) then
+    (bind ?*x* (+ 1 ?*x*))
     (assert (divisible 11 ?x))
   )
 )
@@ -160,8 +167,40 @@
           (= (abs ?n) 65)
           (= (abs ?n) 78)
       ) then
+    (bind ?*x* (+ 1 ?*x*))
     (assert (divisible 13 ?x))
   )
+)
+
+(defrule prime
+  ?ch <- (checkdiv ?x)
+  ?ch2 <- (checked2 ?x)
+  ?ch3 <- (checked3 ?x)
+  ?ch5 <- (checked5 ?x)
+  ?ch7 <- (checked7 ?x)
+  ?ch11 <- (checked11 ?x)
+  ?ch13 <- (checked13 ?x)
+  ?looking <- (looking ?x)
+  =>
+  (assert (checkdivisors))
+)
+
+(defrule primecheck
+  ?checkdivisors <- (checkdivisors)
+  ?looking <- (looking ?x)
+  =>
+  (retract ?checkdivisors)
+  (if (= ?*x* 0) then
+    (if (< (sqrt ?x) 13) then
+      (printout t crlf ?x " es un número primo" crlf)
+     else
+      (printout t crlf "no puedo determinar si " ?x " es un número primo" crlf)
+    )
+   else
+    (printout t crlf ?x " no es un número primo" crlf)
+  )
+  (assert (primecheck))
+  (bind ?*x* 0)
 )
 
 (defrule allchecks
@@ -173,6 +212,7 @@
   ?ch11 <- (checked11 ?x)
   ?ch13 <- (checked13 ?x)
   ?looking <- (looking ?x)
+  ?primecheck <- (primecheck)
   =>
   (retract ?ch)
   (retract ?ch2)
@@ -181,6 +221,8 @@
   (retract ?ch7)
   (retract ?ch11)
   (retract ?ch13)
+  (retract ?looking)
+  (retract ?primecheck)
   (retract ?looking)
   (assert (get-next-input))
 )
@@ -197,7 +239,7 @@
 (defrule get-input
   ?f <- (get-next-input)
   =>
-  (printout t "Introduzca un número, o introduzca 'fin' sin comillas para terminar ")
+  (printout t "Introduzca un número, o introduzca 'fin' sin comillas para terminar" crlf ">")
   (bind ?input (readline))
   (if (neq ?input "fin")
     then
