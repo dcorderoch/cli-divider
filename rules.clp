@@ -28,6 +28,9 @@
   (assert (checked2 ?x))
   (bind ?*x* (+ 1 ?*x*))
   (assert (divisible 2 ?x))
+  (if (> ?x 2) then
+    (bind ?*x* (+ 1 ?*x*))
+  )
 )
 
 (defrule notdivisible2
@@ -73,6 +76,9 @@
     ) then
     (bind ?*x* (+ 1 ?*x*))
     (assert (divisible 3 ?x))
+    (if (> ?x 3) then
+      (bind ?*x* (+ 1 ?*x*))
+    )
   )
 )
 
@@ -192,13 +198,21 @@
   =>
   (retract ?checkdivisors)
   (if (= ?*x* 0) then
-    (if (< (sqrt ?x) 13) then
+    (if (and (< (sqrt ?x) 13) (not (= ?x 1))) then
       (printout t crlf ?x " es un número primo" crlf crlf)
      else
+      (if (= ?x 1) then
+        (printout t crlf ?x " no es un número primo" crlf crlf)
+      else
       (printout t crlf "no puedo determinar si " ?x " es un número primo" crlf crlf)
+      )
     )
    else
-    (printout t crlf ?x " no es un número primo" crlf crlf)
+    (if (= ?*x* 1) then
+      (printout t crlf ?x " es un número primo" crlf crlf)
+    else
+      (printout t crlf ?x " no es un número primo" crlf crlf)
+    )
   )
   (assert (primecheck))
   (bind ?*x* 0)
